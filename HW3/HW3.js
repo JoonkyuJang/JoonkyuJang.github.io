@@ -164,24 +164,14 @@ function render() {
 
     if (intersectionPoints) {
         shader.setVec4('u_color', 1.0, 1.0, 0.0, 1.0); // yellow
-        // Draw a box around each intersection point with size gl_PointSize
-        const boxVertices = [];
-        const halfSize = gl_PointSize / canvas.width; // Adjust size based on canvas width
+        // Draw a dot at each intersection point
+        const pointVertices = [];
         for (let point of intersectionPoints) {
-            const x = point[0];
-            const y = point[1];
-            boxVertices.push(
-                x - halfSize, y - halfSize,
-                x + halfSize, y - halfSize,
-                x + halfSize, y + halfSize,
-                x - halfSize, y + halfSize
-            );
+            pointVertices.push(point[0], point[1]);
         }
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(pointVertices), gl.STATIC_DRAW);
         gl.bindVertexArray(vao);
-        for (let i = 0; i < intersectionPoints.length; i++) {
-            gl.drawArrays(gl.TRIANGLE_FAN, i * 4, 4); // Each box has 4 vertices
-        }
+        gl.drawArrays(gl.POINTS, 0, intersectionPoints.length);
     }
 
     if (isDrawing && startPoint && tempEndPoint) {
